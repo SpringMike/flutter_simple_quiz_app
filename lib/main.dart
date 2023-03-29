@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:sample_project/quizz.dart';
+import 'package:sample_project/result.dart';
+import './answer.dart';
+import './question.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,34 +16,62 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  var questionIndex = 0;
+  final _questions = const [
+    {
+      'questionText': 'What\'s your favorite color?',
+      'answers': [
+        {'text': 'Black', 'score': 10},
+        {'text': 'Red', 'score': 5},
+        {'text': 'Green', 'score': 3},
+        {'text': 'White', 'score': 1},
+      ],
+    },
+    {
+      'questionText': 'What\'s your favorite animal?',
+      'answers': [
+        {'text': 'Rabbit', 'score': 3},
+        {'text': 'Snake', 'score': 11},
+        {'text': 'Elephant', 'score': 5},
+        {'text': 'Lion', 'score': 9},
+      ],
+    },
+    {
+      'questionText': 'Who\'s your favorite instructor?',
+      'answers': [
+        {'text': 'Max', 'score': 1},
+        {'text': 'Max', 'score': 1},
+        {'text': 'Max', 'score': 1},
+        {'text': 'Max', 'score': 1},
+      ],
+    },
+  ];
+  var _questionIndex = 0;
+  var _totalScore = 0;
 
-  void answerQuestion() {
+  void _answerQuestion(int score) {
+    _totalScore += score;
     setState(() {
-      questionIndex = questionIndex + 1;
+      _questionIndex = _questionIndex + 1;
+    });
+  }
+
+  void _restartQuiz() {
+    setState(() {
+      _questionIndex = 0;
+      _totalScore = 0;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    var questions = ['What is ur fav color?', 'What ur fav animals'];
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('My first application'),
-        ),
-        body: Column(
-          children: [
-            Text(questions[questionIndex]),
-            ElevatedButton(
-                onPressed: answerQuestion, child: const Text("Answer 1")),
-            ElevatedButton(
-                onPressed: answerQuestion, child: const Text("Answer 2")),
-            ElevatedButton(
-                onPressed: answerQuestion, child: const Text("Answer 3")),
-          ],
-        ),
-      ),
+          appBar: AppBar(
+            title: const Text('My first application'),
+          ),
+          body: _questionIndex < _questions.length
+              ? Quizz(_questions, _answerQuestion, _questionIndex)
+              : Result(_totalScore,_restartQuiz)),
     );
   }
 }
